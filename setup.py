@@ -255,7 +255,7 @@ if not SKIP_CUDA_BUILD:
 
 
 def get_package_version():
-    with open(Path(this_dir) / PACKAGE_NAME / "__init__.py", "r") as f:
+    with open(Path(this_dir) / "mamba_ssm" / "__init__.py", "r") as f:
         version_match = re.search(r"^__version__\s*=\s*(.*)$", f.read(), re.MULTILINE)
     public_version = ast.literal_eval(version_match.group(1))
     local_version = os.environ.get("MAMBA_LOCAL_VERSION")
@@ -360,7 +360,7 @@ setup(
         "Operating System :: Unix",
     ],
     ext_modules=ext_modules,
-    cmdclass={"bdist_wheel": CachedWheelsCommand, "build_ext": BuildExtension}
+    cmdclass={"bdist_wheel": CachedWheelsCommand, "build_ext": BuildExtension.with_options(use_ninja=False)}
     if ext_modules
     else {
         "bdist_wheel": CachedWheelsCommand,

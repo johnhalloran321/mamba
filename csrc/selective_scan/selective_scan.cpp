@@ -233,7 +233,9 @@ selective_scan_fwd(const at::Tensor &u, const at::Tensor &delta,
     auto input_type = u.scalar_type();
     auto weight_type = A.scalar_type();
     TORCH_CHECK(input_type == at::ScalarType::Float || input_type == at::ScalarType::Half || input_type == at::ScalarType::BFloat16);
-    TORCH_CHECK(weight_type == at::ScalarType::Float || weight_type == at::ScalarType::ComplexFloat);
+    TORCH_CHECK(weight_type == at::ScalarType::Float || weight_type == at::ScalarType::Half || weight_type == at::ScalarType::BFloat16 || weight_type == at::ScalarType::ComplexFloat);
+    // JH
+    // TORCH_CHECK(weight_type == at::ScalarType::Float || weight_type == at::ScalarType::ComplexFloat);
 
     const bool is_variable_B = B.dim() >= 3;
     const bool is_variable_C = C.dim() >= 3;
@@ -279,7 +281,9 @@ selective_scan_fwd(const at::Tensor &u, const at::Tensor &delta,
 
     if (D_.has_value()) {
         auto D = D_.value();
-        TORCH_CHECK(D.scalar_type() == at::ScalarType::Float);
+        TORCH_CHECK(D.scalar_type() == at::ScalarType::Float || D.scalar_type() == at::ScalarType::Half || D.scalar_type() == at::ScalarType::BFloat16);
+        // JH
+        // TORCH_CHECK(D.scalar_type() == at::ScalarType::Float);
         TORCH_CHECK(D.is_cuda());
         TORCH_CHECK(D.stride(-1) == 1 || D.size(-1) == 1);
         CHECK_SHAPE(D, dim);
@@ -287,7 +291,9 @@ selective_scan_fwd(const at::Tensor &u, const at::Tensor &delta,
 
     if (delta_bias_.has_value()) {
         auto delta_bias = delta_bias_.value();
-        TORCH_CHECK(delta_bias.scalar_type() == at::ScalarType::Float);
+        TORCH_CHECK(delta_bias.scalar_type() == at::ScalarType::Float || delta_bias.scalar_type() == at::ScalarType::BFloat16 || delta_bias.scalar_type() == at::ScalarType::Half);
+        // JH
+        // TORCH_CHECK(delta_bias.scalar_type() == at::ScalarType::Float);
         TORCH_CHECK(delta_bias.is_cuda());
         TORCH_CHECK(delta_bias.stride(-1) == 1 || delta_bias.size(-1) == 1);
         CHECK_SHAPE(delta_bias, dim);
@@ -350,7 +356,9 @@ selective_scan_bwd(const at::Tensor &u, const at::Tensor &delta,
     auto input_type = u.scalar_type();
     auto weight_type = A.scalar_type();
     TORCH_CHECK(input_type == at::ScalarType::Float || input_type == at::ScalarType::Half || input_type == at::ScalarType::BFloat16);
-    TORCH_CHECK(weight_type == at::ScalarType::Float || weight_type == at::ScalarType::ComplexFloat);
+    TORCH_CHECK(weight_type == at::ScalarType::Float || weight_type == at::ScalarType::BFloat16 || weight_type == at::ScalarType::Half || weight_type == at::ScalarType::ComplexFloat);
+    // JH
+    // TORCH_CHECK(weight_type == at::ScalarType::Float || weight_type == at::ScalarType::ComplexFloat);
 
     const bool is_variable_B = B.dim() >= 3;
     const bool is_variable_C = C.dim() >= 3;
@@ -400,7 +408,9 @@ selective_scan_bwd(const at::Tensor &u, const at::Tensor &delta,
 
     if (D_.has_value()) {
         auto D = D_.value();
-        TORCH_CHECK(D.scalar_type() == at::ScalarType::Float);
+        TORCH_CHECK(D.scalar_type() == at::ScalarType::Float || D.scalar_type() == at::ScalarType::Half || D.scalar_type() == at::ScalarType::BFloat16);
+        // JH
+        // TORCH_CHECK(D.scalar_type() == at::ScalarType::Float);
         TORCH_CHECK(D.is_cuda());
         TORCH_CHECK(D.stride(-1) == 1 || D.size(-1) == 1);
         CHECK_SHAPE(D, dim);
@@ -408,7 +418,9 @@ selective_scan_bwd(const at::Tensor &u, const at::Tensor &delta,
 
     if (delta_bias_.has_value()) {
         auto delta_bias = delta_bias_.value();
-        TORCH_CHECK(delta_bias.scalar_type() == at::ScalarType::Float);
+        TORCH_CHECK(delta_bias.scalar_type() == at::ScalarType::Float || delta_bias.scalar_type() == at::ScalarType::Half || delta_bias.scalar_type() == at::ScalarType::BFloat16);
+        // JH
+        // TORCH_CHECK(delta_bias.scalar_type() == at::ScalarType::Float);
         TORCH_CHECK(delta_bias.is_cuda());
         TORCH_CHECK(delta_bias.stride(-1) == 1 || delta_bias.size(-1) == 1);
         CHECK_SHAPE(delta_bias, dim);
